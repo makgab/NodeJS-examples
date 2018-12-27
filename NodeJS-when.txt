@@ -1,0 +1,68 @@
+https://ithub.hu/blog/post/Nodejs_miert_mikor_es_mikor_ne/
+
+Mik azok a tipikus alkalmazás kategóriák, amelyeknél érdemes megfontolnunk a Node.js platformot.
+
+
+Realtime többfelhasználós alkalmazások
+--------------------------------------
+Ebben a kategóriában népszerű példaként szokták hozni a chatszobát, mint olyan alkalmazást, 
+melyet mintha csak a Node.js-re öntöttek volna: nagyforgalmú, adatintenzív (de kis számításigényű) alkalmazás,
+amely elosztott platformon fut. Ezek az appok (és a példánk is) nagyon gyakran eseményvezéreltek,
+nagyszámú konkurrens kapcsolatot kell kezelniük, és nem mellékesen mindezek mellett elfogadható felhasználói élmény
+is kell nyújtaniuk.
+
+
+API egy objektumadatbázis felett
+--------------------------------
+Bár a realtime alkalmazások jelentik a Node.js savát-borsát, viszonylag adja magát olyan esetekben is,
+amikor egy API-t kell fejlesztenünk egy objektum alapú adatbázishoz (pl. MongoDB).
+Mivel az adatainkat már eleve JSON-ban tároljuk, a JavaScriptben történő kezelésük igen kényelmessé válik,
+illetve a szokásos OO-relációs eltérést sem kell lekezelnünk.
+
+Ha például egy MongoDB adatbázis fölé Railsben, PHP-ban vagy más hasonló környezetben építenénk API-t,
+az adatok olvasásához és írásához számos extra lépést kellene beépítenünk: a JSON-t konvertálni kellene a saját modellünkre,
+azokat pedig visszaalakítani JSON-ra, hogy HTTP válaszként küldhessük őket. Ezeket Node.js esetén mind megspóroljuk,
+és nagyon hatékony tud lenni, ha az adatunk az egész stacken ugyanazon formátumban van.
+
+
+Üzenetsorok kialakítása
+-----------------------
+Ha az alkalmazásunk nagyszámú kérést fogad, az adatbázis könnyen szűk keresztmetszetté válhat.
+Mint azt jól tudjuk, a Node.js nagyon jó a sok konkurrens kérés kezelésében, azonban mivel a DB hozzáférés egy blokkoló művelet,
+könnyen bajba kerülhetünk a teljesítményt illetően. A megoldás erre az, hogy a kliensnek már az adatbázis művelet elvégzése
+előtt választ adunk, mintha az sikeresen megvalósult volna, a valódi kérést pedig betesszük valamilyen sorba
+(erre használhatunk külső toolt, pl. ZeroMQ).
+
+Ezzel a megközelítéssel a rendszerünk nagy terhelés alatt is válaszképes marad. Ez főleg olyan esetekben jó,
+ahol a változtatásoknak nem kell azonnal megjelenniük az adatbázisban, és az “eventual consistency” is elég
+(pl. likeok száma a Facebookon, felhasználói statisztikák, stb.).
+
+Egy ilyen queue természetesen más környezetben is megvalósítható, azonban legtöbbször nem ugyanazon a hardveren,
+vagy sokkal alacsonyabb válaszidővel.
+
+
+A következőkben nézzünk meg néhány esetet, amelyen a Node.js kifejezetten ellenjavallt lehet.
+
+
+Szerveroldali alkalmazás, mögötte relációs adatbázissal
+-------------------------------------------------------
+Ez egy máig nagyon elterejedt és klasszikus felállás, és egy olyan, amelyre a Node.js kifejezetten rossz választás;
+egy Node.js/Express.js kombináció alkalmazása egyértelműen hátrányosabb mondjuk egy Railshez vagy Djangohoz képest.
+
+Sajnos a Node.js ökoszisztémában az RDBMS eszközök még mindig elég fejletlennek mondhatók,
+az egyetlen említésre méltó ORM a Sequelize, de tudásban és használhatóságban máig elmarad a riválisoktól
+és relációs adatbázisok használatakor (főleg ha pl. Rails háttérrel rendelkezünk) sokszor úgy érezhetjük,
+újra és újra “fel kell találnunk a kereket”.
+
+
+Magas számításigényű szerveroldali alkalmazások
+-----------------------------------------------
+A Node.js által megoldott legfőbb probléma a blokkoló I/O általi teljesítménycsökkenés, amit jól meg is old.
+Amennyiben azonban számításigényes feladatokat végzünk benne, viszonylag gyorsan semmissé tehetjük
+a nagy áteresztőképesség nyújtotta előnyöket, hiszen bármely bejövő kérést blokkolni fog a jelenleg zajló számítás,
+hiszen ne feledjük: a Node.js egyszálas, és mindig egyetlen CPU magot használ.
+
+Ha mégis szükség van ilyesmire az alkalmazásunkban, jobb azt afféle külső erőforrásként megvalósítani,
+és a korábban említett üzenetsoros megoldással kezelni.
+
+
