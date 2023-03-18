@@ -1,18 +1,19 @@
 # NodeJS-examples
 
-What is Node.js?
+- What is Node.js?
 
- - Node.js is an open source server environment
+  - Node.js is an open source server environment
 
- - Node.js is free
+  - Node.js is free
 
- - Node.js runs on various platforms (Windows, Linux, Unix, Mac OS X, etc.)
+  - Node.js runs on various platforms (Windows, Linux, Unix, Mac OS X, etc.)
 
- - Node.js uses JavaScript on the server
+  - Node.js uses JavaScript on the server
 
 
 
-## NodeJS documentation, homapage, examples
+
+## NodeJS documentation, homepage, examples
 
 
  - https://www.w3schools.com/nodejs/
