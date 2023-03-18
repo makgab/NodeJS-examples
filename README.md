@@ -22,6 +22,30 @@
 
 
 
+## NodeJS install, using
+
+ - Linux RedHat/CentOS/Fedora:
+
+```
+   ~# dnf install nodejs
+```
+
+ - Running:
+
+```
+   ~# node myapp.js
+```
+
+ - NPM (Package management):
+
+```
+   ~# npm install module_name
+```
+
+
+
+
+
 
 
 :)
